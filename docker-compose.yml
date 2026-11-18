@@ -1,0 +1,27 @@
+services:
+  game-service:
+    build:
+      context: ./src/game_service
+    image: reliability-game-service
+    ports:
+      - "8081:8081"
+
+  recommendations:
+    build:
+      context: ./src/recommendations
+    image: reliability-recommendations
+    ports:
+      - "8082:8082"
+
+  main-service:
+    build:
+      context: ./src/main_service
+    image: reliability-main-service
+    ports:
+      - "8080:8080"
+    environment:
+      REST_CLIENT_BASE_URI_GAME: http://game-service:8081/api/v1/games
+      REST_CLIENT_BASE_URI_RECOMMENDATIONS: http://recommendations:8082/api/v1/recommendations
+    depends_on:
+      - game-service
+      - recommendations
